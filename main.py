@@ -1,24 +1,42 @@
 import telebot
 from telebot import types
+import os
+from flask import Flask
+from threading import Thread
 
-# သင်ပေးထားတဲ့ Token ကို ထည့်သွင်းထားပါတယ်
+# ၁။ Bot Token Setting
 TOKEN = '8559670246:AAGXQN8Se_pnmPk6eUvM_n1QfbWxnCH5To8'
 bot = telebot.TeleBot(TOKEN)
 
-# သီချင်းစာရင်း (ဒီနေရာက File ID တွေကို သင်ပို့လို့ရလာတဲ့ ID တွေနဲ့ လဲပေးပါ)
+# ၂။ Render Port Error မတက်အောင် Flask Server ဆောက်ခြင်း
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is Online!"
+
+def run():
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# ၃။ သီချင်းစာရင်း (File ID တွေကို နောက်မှ ပြန်လဲပေးရန်)
 SONG_DATA = {
     "chill": {
         "title": " အေးအေးလေး သီချင်းများ",
         "songs": {
-            "c1": {"name": "အေးအေးလေး (၁)", "file_id": "ဒီနေရာမှာ_File_ID_ထည့်ပါ"},
-            "c2": {"name": "အေးအေးလေး (၂)", "file_id": "ဒီနေရာမှာ_File_ID_ထည့်ပါ"},
+            "c1": {"name": "အေးအေးလေး (၁)", "file_id": "YOUR_FILE_ID_HERE"},
+            "c2": {"name": "အေးအေးလေး (၂)", "file_id": "YOUR_FILE_ID_HERE"},
         }
     },
     "rap": {
         "title": " Rap သီချင်းများ",
         "songs": {
-            "r1": {"name": "Rap (၁)", "file_id": "ဒီနေရာမှာ_File_ID_ထည့်ပါ"},
-            "r2": {"name": "Rap (၂)", "file_id": "ဒီနေရာမှာ_File_ID_ထည့်ပါ"},
+            "r1": {"name": "Rap (၁)", "file_id": "YOUR_FILE_ID_HERE"},
+            "r2": {"name": "Rap (၂)", "file_id": "YOUR_FILE_ID_HERE"},
         }
     }
 }
@@ -45,7 +63,7 @@ def handle_query(call):
     elif call.data.startswith("play_"):
         _, cat, s_id = call.data.split("_")
         song = SONG_DATA[cat]["songs"][s_id]
-        if song["file_id"] == "ဒီနေရာမှာ_File_ID_ထည့်ပါ":
+        if song["file_id"] == "YOUR_FILE_ID_HERE":
             bot.answer_callback_query(call.id, text="Error: File ID မထည့်ရသေးပါ!")
         else:
             bot.send_audio(call.message.chat.id, song["file_id"], caption=f" {song['name']}")
@@ -54,9 +72,13 @@ def handle_query(call):
     elif call.data == "main_menu":
         start(call.message)
 
-# File ID ယူဖို့အတွက် (သီချင်းပို့ရင် ID ပြန်ပြောပေးမယ့်အပိုင်း)
+# File ID ယူရန်အပိုင်း
 @bot.message_handler(content_types=['audio'])
 def get_id(message):
     bot.reply_to(message, f"ဒီသီချင်းရဲ့ ID က:\n`{message.audio.file_id}`", parse_mode="Markdown")
 
-bot.infinity_polling()
+# ၄။ Bot ကို စတင်မောင်းနှင်ခြင်း
+if __name__ == "__main__":
+    keep_alive() # Port ဖွင့်ပေးရန်
+    print("Bot is starting...")
+    bot.infinity_polling()
