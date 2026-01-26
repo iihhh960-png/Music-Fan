@@ -26,19 +26,22 @@ def is_user_member(user_id):
     try:
         status1 = bot.get_chat_member(CH1_ID, user_id).status
         status2 = bot.get_chat_member(CH2_ID, user_id).status
-        return status1 in ['member', 'administrator', 'creator'] and \
-               status2 in ['member', 'administrator', 'creator']
+        allowed = ['member', 'administrator', 'creator']
+        return status1 in allowed and status2 in allowed
     except Exception:
         return False
 
-# Emoji Unicode များ- \U0001F1F2\U0001F1F1 (MM Flag), \U0001F3B5 (Music Note)
+# သီချင်းဒေတာများ - Double J ကို ၂ ပုဒ် ပြင်ဆင်ထားသည်
 SONG_DATA = {
     "myanmar": {
         "title": "\U0001F1F2\U0001F1F1 Myanmar Songs",
         "singers": {
             "ပူစူး Songs": [{"name": "ပူစူး - နင်စေရင်", "file_id": "CQACAgUAAxkBAAMIaXObNtjgObKs2O7oejTdLFVcR2AAAhUhAAJvFaBX5XBvlccGtns4BA"}],
             "အာဇာနည် Songs": [{"name": "ကိုယ့်အနားရှိစေချင်", "file_id": "CQACAgUAAxkBAAMKaXObVnlhYFsWOGkuDucZW3i9BGEAAo8bAAL9oplXeCtEwYW8JmA4BA"}],
-            "Double J Songs": [{"name": "WHY", "file_id": "CQACAgUAAxkBAAMMaXOcIKnD4lc5EPswG1ZBZdIopwsAAhYhAAJvFaBX7TREe2bfnWo4BA"}],
+            "Double J Songs": [
+                {"name": "WHY", "file_id": "CQACAgUAAxkBAAMMaXOcIKnD4lc5EPswG1ZBZdIopwsAAhYhAAJvFaBX7TREe2bfnWo4BA"},
+                {"name": "ခမ်းနားလွန်းတဲ့နေ့", "file_id": "CQACAgUAAxkBAAMUaXOndUxdQiDrpgbQMqkkmoQcT_sAAichAAJvFaBXAW9yBr7b3WM4BA"}
+            ],
             "Raymond Songs": [{"name": "ဆေးလိပ်နဲ့မီးချစ်", "file_id": "CQACAgUAAxkBAAMQaXOcdeEoBakGxJ6epQgl0KmTwOgAAhghAAJvFaBXcb4r7Z7mHlk4BA"}],
             "ဟန်ထွန်း Songs": [{"name": "ရင်နာတယ်ဧပရယ်", "file_id": "CQACAgUAAxkBAAMSaXOc2SsWc0YqU_vu6xs9R9C_t9UAAhshAAJvFaBXCEUpE_DasYw4BA"}],
             "ဗဒင် Songs": [{"name": "သိုးမည်းတေအကြောင်း", "file_id": "CQACAgUAAxkBAAMOaXOcPMkHREd8b7jY8X0obEvT2tYAAhchAAJvFaBXaa8ZotsvmQo4BA"}],
@@ -68,7 +71,7 @@ def start(message):
     else:
         markup = types.InlineKeyboardMarkup()
         btn_join1 = types.InlineKeyboardButton("\U0001F4E2 Channel 1 Join ရန်", url="https://t.me/musicfan11234")
-        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/atom_hack_channel")
+        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/musicfan11234")
         btn_check = types.InlineKeyboardButton("\u2705 Ch Join ပြီးပါပြီ", callback_data="check_join")
         markup.add(btn_join1, btn_join2)
         markup.add(btn_check)
