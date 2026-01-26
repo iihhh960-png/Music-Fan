@@ -68,7 +68,7 @@ def start(message):
     else:
         markup = types.InlineKeyboardMarkup()
         btn_join1 = types.InlineKeyboardButton("\U0001F4E2 Channel 1 Join ရန်", url="https://t.me/musicfan11234")
-        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/musicfan11234")
+        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/atom_hack_channel")
         btn_check = types.InlineKeyboardButton("\u2705 Ch Join ပြီးပါပြီ", callback_data="check_join")
         markup.add(btn_join1, btn_join2)
         markup.add(btn_check)
