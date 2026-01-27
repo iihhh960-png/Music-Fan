@@ -6,7 +6,7 @@ from threading import Thread
 
 TOKEN = '8559670246:AAGXQN8Se_pnmPk6eUvM_n1QfbWxnCH5To8'
 CH1_ID = -1003628384777
-CH2_ID = -1003882533307
+CH2_ID = -1002305886367
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -31,7 +31,6 @@ def is_user_member(user_id):
     except Exception:
         return False
 
-# သီချင်းဒေတာများ (ပူစူး သီချင်းသစ်များ ထည့်သွင်းပြီး)
 SONG_DATA = {
     "myanmar": {
         "title": "\U0001F1F2\U0001F1F1 Myanmar Songs",
@@ -60,14 +59,13 @@ SONG_DATA = {
     }
 }
 
-# --- Admin သီးသန့် File ID ထုတ်ပေးခြင်း ---
 @bot.message_handler(content_types=['audio'])
 def get_file_id(message):
     try:
         user_status = bot.get_chat_member(CH1_ID, message.from_user.id).status
         if user_status in ['administrator', 'creator']:
             f_id = message.audio.file_id
-            bot.reply_to(message, f"\u2705 **Admin အသိအမှတ်ပြုသည်**\n\n **File ID:**\n`{f_id}`", parse_mode="Markdown")
+            bot.reply_to(message, f"\u2705 **Admin Mode**\n\n\U0001F3B5 **File ID:**\n`{f_id}`", parse_mode="Markdown")
     except Exception:
         pass
 
@@ -88,7 +86,7 @@ def start(message):
     else:
         markup = types.InlineKeyboardMarkup()
         btn_join1 = types.InlineKeyboardButton("\U0001F4E2 Channel 1 Join ရန်", url="https://t.me/musicfan11234")
-        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/musicfan11234")
+        btn_join2 = types.InlineKeyboardButton("\U0001F4E2 Channel 2 Join ရန်", url="https://t.me/atom_hack_channel")
         btn_check = types.InlineKeyboardButton("\u2705 Ch Join ပြီးပါပြီ", callback_data="check_join")
         markup.add(btn_join1, btn_join2)
         markup.add(btn_check)
