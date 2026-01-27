@@ -22,6 +22,7 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
+# Member စစ်ဆေးခြင်း (Admin လား Member လား ခွဲခြားရန်)
 def is_user_member(user_id):
     try:
         status1 = bot.get_chat_member(CH1_ID, user_id).status
@@ -31,7 +32,7 @@ def is_user_member(user_id):
     except Exception:
         return False
 
-# သီချင်းဒေတာများ - Double J ကို ၂ ပုဒ် ပြင်ဆင်ထားသည်
+# သီချင်းဒေတာများ
 SONG_DATA = {
     "myanmar": {
         "title": "\U0001F1F2\U0001F1F1 Myanmar Songs",
@@ -47,12 +48,25 @@ SONG_DATA = {
             "ဗဒင် Songs": [{"name": "သိုးမည်းတေအကြောင်း", "file_id": "CQACAgUAAxkBAAMOaXOcPMkHREd8b7jY8X0obEvT2tYAAhchAAJvFaBXaa8ZotsvmQo4BA"}],
             "NJ Songs": [{"name": "ဒဿ", "file_id": "CQACAgUAAxkBAAMWaXOoA7eemPmp3lxr_aesCqilD10AAighAAJvFaBXEzakoXUhHDA4BA"}]
         }
-    },
-    "english": {
-        "title": "\U0001F1FA\U0001F1F8 English Songs",
-        "singers": {}
     }
 }
+
+# --- Admin သီးသန့် File ID ထုတ်ပေးခြင်း ---
+@bot.message_handler(content_types=['audio'])
+def get_file_id(message):
+    try:
+        # User ရဲ့ status ကို စစ်သည်
+        user_status = bot.get_chat_member(CH1_ID, message.from_user.id).status
+        
+        # Admin သို့မဟုတ် ပိုင်ရှင် ဖြစ်မှသာ ID ထုတ်ပေးမည်
+        if user_status in ['administrator', 'creator']:
+            f_id = message.audio.file_id
+            bot.reply_to(message, f"\u2705 **Admin အသိအမှတ်ပြုသည်**\n\n **File ID:**\n`{f_id}`", parse_mode="Markdown")
+        else:
+            # Admin မဟုတ်လျှင် ဘာမှပြန်မလုပ်ပါ (သို့မဟုတ် သတိပေးစာပို့နိုင်သည်)
+            pass
+    except Exception:
+        pass
 
 def show_music_categories(chat_id, message_id=None):
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -97,15 +111,11 @@ def handle_query(call):
         for singer in singers.keys():
             markup.add(types.InlineKeyboardButton(singer, callback_data=f"singer_{cat_key}_{singer}"))
         markup.add(types.InlineKeyboardButton("\U0001F519 Back", callback_data="main_menu"))
-        instruction_text = "ကိုယ်နားထောင်ချင်တဲ့ အဆိုတော်နာမည် ကိုရွေးပေးပါ ခင်ဗျာ"
-        bot.edit_message_text(f"\U0001F3A4 **{SONG_DATA[cat_key]['title']}**\n\n{instruction_text}", call.message.chat.id, call.message.message_id, reply_markup=markup, parse_mode="Markdown")
+        bot.edit_message_text(f"\U0001F3A4 **{SONG_DATA[cat_key]['title']}**\n\nကိုယ်နားထောင်ချင်တဲ့ အဆိုတော်နာမည် ကိုရွေးပေးပါ ခင်ဗျာ", call.message.chat.id, call.message.message_id, reply_markup=markup, parse_mode="Markdown")
 
     elif call.data.startswith("singer_"):
         _, cat_key, singer_name = call.data.split("_")
         songs = SONG_DATA[cat_key]["singers"][singer_name]
-        if not songs:
-            bot.answer_callback_query(call.id, "\u26A0\uFE0F ဤအဆိုတော်၏ သီချင်းမရှိသေးပါ!", show_alert=True)
-            return
         markup = types.InlineKeyboardMarkup(row_width=1)
         for i, song in enumerate(songs):
             markup.add(types.InlineKeyboardButton(song["name"], callback_data=f"play_{cat_key}_{singer_name}_{i}"))
@@ -118,7 +128,6 @@ def handle_query(call):
         songs_list = SONG_DATA[cat]["singers"][singer]
         song = songs_list[index]
         markup = types.InlineKeyboardMarkup(row_width=3)
-        
         if len(songs_list) > 1:
             prev_idx = (index - 1) % len(songs_list)
             next_idx = (index + 1) % len(songs_list)
@@ -129,12 +138,10 @@ def handle_query(call):
             )
         else:
             markup.add(types.InlineKeyboardButton("\u23F9\uFE0F ပိတ်မယ်", callback_data="stop_music"))
-            
         bot.send_audio(call.message.chat.id, song["file_id"], caption=f"\U0001F3B5 **{song['name']}**", reply_markup=markup, parse_mode="Markdown")
 
     elif call.data == "stop_music":
         bot.delete_message(call.message.chat.id, call.message.message_id)
-    
     elif call.data == "main_menu":
         show_music_categories(call.message.chat.id, call.message.message_id)
 
