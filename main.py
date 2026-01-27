@@ -22,7 +22,6 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# Member စစ်ဆေးခြင်း (Admin လား Member လား ခွဲခြားရန်)
 def is_user_member(user_id):
     try:
         status1 = bot.get_chat_member(CH1_ID, user_id).status
@@ -32,12 +31,22 @@ def is_user_member(user_id):
     except Exception:
         return False
 
-# သီချင်းဒေတာများ
+# သီချင်းဒေတာများ (ပူစူး သီချင်းသစ်များ ထည့်သွင်းပြီး)
 SONG_DATA = {
     "myanmar": {
         "title": "\U0001F1F2\U0001F1F1 Myanmar Songs",
         "singers": {
-            "ပူစူး Songs": [{"name": "ပူစူး - နင်စေရင်", "file_id": "CQACAgUAAxkBAAMIaXObNtjgObKs2O7oejTdLFVcR2AAAhUhAAJvFaBX5XBvlccGtns4BA"}],
+            "ပူစူး Songs": [
+                {"name": "နင်စေရင်", "file_id": "CQACAgUAAxkBAAMIaXObNtjgObKs2O7oejTdLFVcR2AAAhUhAAJvFaBX5XBvlccGtns4BA"},
+                {"name": "မျက်နှာ", "file_id": "CQACAgUAAxkBAAOaaXhlxPPAsS8HBZzDLltEBuFPSwkAAgMeAALq-cBXT0MIYpL2UTg4BA"},
+                {"name": "တစ်မိုးအောက်", "file_id": "CQACAgUAAxkBAAOfaXh_LS3JrTsmlRl4JMTvyU5lsRQAAjgeAALq-cBXtEs08go0rSY4BA"},
+                {"name": "နေချင်တာမင်းအနား", "file_id": "CQACAgUAAxkBAAOhaXh_LZsDWtS8w0KZoyU_AAGQSEFLAAI8HgAC6vnAV5gPIWGTWV8TOAQ"},
+                {"name": "ဝန်ခံပါ", "file_id": "CQACAgUAAxkBAAOiaXh_LbSKml2kC9P9sD1erY1KTI4AAj8eAALq-cBX1UAMsVP4Yzk4BA"},
+                {"name": "မ", "file_id": "CQACAgUAAxkBAAOjaXh_LWGAFfbp9f5L2ZAJhLLlc2IAAkMeAALq-cBXRZytklpsAAEKOAQ"},
+                {"name": "မင်းစိတ်တိုင်းကျ", "file_id": "CQACAgUAAxkBAAOkaXh_LScX8iVmLg0-qWDRFIWXkDEAAkYeAALq-cBXKWyc-xzg2WQ4BA"},
+                {"name": "မယ်သီတာကိုမထိနဲ့", "file_id": "CQACAgUAAxkBAAOlaXh_LQuW59C6ZbwNUNP9MOdKhJMAAkgeAALq-cBXvF_agqiJ7Ac4BA"},
+                {"name": "အဆင်ပြေပါစေ", "file_id": "CQACAgUAAxkBAAOmaXh_LY9j8z8TDC7khCqlj9F3hioAAkkeAALq-cBXzHIzp4NZAdw4BA"}
+            ],
             "အာဇာနည် Songs": [{"name": "ကိုယ့်အနားရှိစေချင်", "file_id": "CQACAgUAAxkBAAMKaXObVnlhYFsWOGkuDucZW3i9BGEAAo8bAAL9oplXeCtEwYW8JmA4BA"}],
             "Double J Songs": [
                 {"name": "WHY", "file_id": "CQACAgUAAxkBAAMMaXOcIKnD4lc5EPswG1ZBZdIopwsAAhYhAAJvFaBX7TREe2bfnWo4BA"},
@@ -55,16 +64,10 @@ SONG_DATA = {
 @bot.message_handler(content_types=['audio'])
 def get_file_id(message):
     try:
-        # User ရဲ့ status ကို စစ်သည်
         user_status = bot.get_chat_member(CH1_ID, message.from_user.id).status
-        
-        # Admin သို့မဟုတ် ပိုင်ရှင် ဖြစ်မှသာ ID ထုတ်ပေးမည်
         if user_status in ['administrator', 'creator']:
             f_id = message.audio.file_id
             bot.reply_to(message, f"\u2705 **Admin အသိအမှတ်ပြုသည်**\n\n **File ID:**\n`{f_id}`", parse_mode="Markdown")
-        else:
-            # Admin မဟုတ်လျှင် ဘာမှပြန်မလုပ်ပါ (သို့မဟုတ် သတိပေးစာပို့နိုင်သည်)
-            pass
     except Exception:
         pass
 
