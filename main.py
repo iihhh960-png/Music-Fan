@@ -5,8 +5,8 @@ from flask import Flask
 from threading import Thread
 
 TOKEN = '8559670246:AAGXQN8Se_pnmPk6eUvM_n1QfbWxnCH5To8'
-CH1_ID = -1003628384777   
-CH2_ID = -1002305886367   
+CH1_ID = -1003882533307   
+CH2_ID = -1003628384777   
 
 bot = telebot.TeleBot(TOKEN)
 
